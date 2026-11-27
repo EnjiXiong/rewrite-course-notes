@@ -1,7 +1,8 @@
 # rewrite-course-notes
 
 > **Version 1.6.0** · Agent Skill for students reviewing previously studied courses before exams  
-> Restructure and compress course slides (PPTX / Beamer PDF) in original lecture order while preserving lecturer wording, complete formula chains, and slide synthesis—producing clean, searchable LaTeX / PDF review notes without visual clutter.
+> **Recommended pairing: Gemini** (Antigravity / Gemini CLI) for full-course multimodal slide extraction, contact-sheet formula inspection, and rendered PDF verification.  
+> Restructure and compress course slides (PPTX / Beamer PDF) in original lecture order while preserving lecturer wording, complete formula chains, and slide synthesis, producing clean, searchable LaTeX / PDF review notes without visual clutter.
 
 ---
 
@@ -57,9 +58,19 @@ Too many lecture decks and AI-generated study summaries suffer from **AI slop**:
 
 ## 2. Configure on an Agent
 
+### Recommended Pairing: Use with Gemini
+
+Although `rewrite-course-notes` follows the open Agent Skills specification and works across multiple agents, **pairing it with Gemini** (for example, Gemini models in **Antigravity** or Gemini-backed agent workflows) is strongly recommended for full-course rewrites:
+
+| Workflow demand | Why Gemini pairs well |
+|---|---|
+| **Full-course multi-lecture context** | Holds 10+ lecture extractions, notation/convention-flip registries (`SOURCE_MAP.md`), and cross-lecture references together without losing early definitions |
+| **Multimodal contact-sheet & PDF review** | Inspects image-embedded formulas (`imgs > 0` without math XML), `300 DPI` cropped slide figures, and compiled PDF pages directly for clipping or orphan breaks |
+| **Dense formatting & LaTeX compliance** | Follows line-by-line anti-crowding macros, four-stage formula chains, and the 8 LaTeX safety gates consistently across multi-file builds |
+
 ### Option A: Install via Skills CLI (Recommended)
 
-Works across Codex, Claude Code, Antigravity, Cursor, OpenCode, and other tools compatible with [Agent Skills](https://skills.sh/):
+Works across Antigravity, Gemini CLI, Codex, Claude Code, Cursor, OpenCode, and other tools compatible with [Agent Skills](https://skills.sh/):
 
 ```bash
 npx skills add EnjiXiong/rewrite-course-notes
@@ -77,10 +88,10 @@ The repository root is a self-contained skill folder (`SKILL.md`, `assets/`, `re
 
 | Agent / Scope | Install command | Invoke in chat |
 |---|---|---|
+| **Antigravity + Gemini** *(Recommended, global)* | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.gemini/config/skills/rewrite-course-notes` | `/rewrite-course-notes` |
 | **Codex** (global) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.codex/skills/rewrite-course-notes` | `$rewrite-course-notes` |
-| **Antigravity** (global) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.gemini/config/skills/rewrite-course-notes` | `/rewrite-course-notes` |
 | **Claude Code** (global) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.claude/skills/rewrite-course-notes` | `/rewrite-course-notes` |
-| **Project-local** (Cursor, OpenCode, Antigravity, etc.) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git .agents/skills/rewrite-course-notes` | Reference the skill name in chat |
+| **Project-local** (Antigravity, Cursor, OpenCode, etc.) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git .agents/skills/rewrite-course-notes` | Reference the skill name in chat |
 
 ### Optional Local Dependencies (For PDF Compilation & Slide Extraction)
 
@@ -99,7 +110,7 @@ Markdown-only review sheets need no extra packages. To compile the LaTeX templat
 
 ## 3. Recommended Prompt
 
-Copy the Markdown block below, replace the `[...]` placeholders with your course details, and paste it to your agent (switch `/rewrite-course-notes` to `$rewrite-course-notes` if using Codex):
+Copy the Markdown block below, replace the `[...]` placeholders with your course details, and paste it to your agent (**recommended: run with Gemini in Antigravity** using `/rewrite-course-notes`, or switch to `$rewrite-course-notes` in Codex):
 
 ```markdown
 Use /rewrite-course-notes to build exam review notes for **[Course Code & Title]**.
