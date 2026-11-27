@@ -1,105 +1,105 @@
 # rewrite-course-notes
 
-> **Version 1.6.0** · Agent Skill（面向已学过课程、进入考前复习阶段的学生）  
-> 按原讲次顺序重构并压缩课程课件（PPTX / Beamer PDF），保留授课原文措辞、完整公式推导链与综合对比结构，输出克制、清晰、可直接打印或电子检索的考前复习讲义。
+> **Version 1.6.0** · Agent Skill for students reviewing previously studied courses before exams  
+> Restructure and compress course slides (PPTX / Beamer PDF) in original lecture order while preserving lecturer wording, complete formula chains, and slide synthesis—producing clean, searchable LaTeX / PDF review notes without visual clutter.
 
 ---
 
-## 1. 简介：这是什么、为什么需要它与排版风格
+## 1. Introduction: What It Is, Why Use It, and Style
 
-### 这是什么
+### What It Is
 
-`rewrite-course-notes` 是一个标准 **Agent Skill**（主规范见 [SKILL.md](SKILL.md)，版本记录见 [CHANGELOG.md](CHANGELOG.md)）。它服务于**已经学过课程、需要高效复习迎考的学生**，而不是把课件改写成另一本从零讲起的教材。提供课件（PPTX / PDF）与考核范围后，Agent 会按原讲次提取考点、核对公式与勘误、裁剪高价值原图，并生成结构统一的 LaTeX / PDF 复习讲义与可选速查手册。
+`rewrite-course-notes` is an **Agent Skill** ([SKILL.md](SKILL.md), version history in [CHANGELOG.md](CHANGELOG.md)) built for learners who have already attended class and need compact, exam-ready review sheets rather than another introductory textbook. Given course slides and exam scope, the agent extracts text, speaker notes, and figures in lecture order, verifies worked calculations and errata with scripts, and outputs structured LaTeX / PDF review notes and optional lookup companions.
 
-### 为什么用这个：告别 AI slop 式教学课件
+### Why Use It: Eliminating "AI Slop" Course Notes
 
-现在很多课程课件和 AI 自动生成的“复习总结”普遍掉进了 **AI slop** 陷阱：页面看似信息满满、色彩绚丽，真正考前翻开时却到处干扰理解。下表把 6 类高频痛点与本 Skill 的对应做法逐行对齐：
+Too many lecture decks and AI-generated study summaries suffer from **AI slop**: pages look busy yet actively get in the way of exam prep. Each rule in this skill targets one concrete failure mode:
 
-| 常见课件 / AI 总结痛点 | 考前复习时的实际干扰 | `rewrite-course-notes` 的处理方式 |
+| Common slide / AI summary failure | How it disrupts exam review | How `rewrite-course-notes` fixes it |
 |---|---|---|
-| **胡乱堆砌内容** | 定义、背景闲话、前沿展望与重复代入混在同一页，看不完也抓不住必考部分 | • 区分主路径考点与讲末 `[Supplement]` / 扩展区<br>• 删除无新意的单数字代入与已被后文覆盖的旧预览<br>• 保留课堂例题、核心难点与关键反例 |
-| **画面纷乱** | 一行塞进多条分号短句，无序列表层层嵌套，视线找不到信息边界 | • 按知识关系选择最小清晰结构（概念属性表、方法对比矩阵、编号动作步）<br>• 严格执行逐行防拥挤，每条独立结论单独起行 |
-| **颜色过多** | 彩虹高亮与高饱和度警示框铺满页面，阅读几页就产生强烈视觉疲劳 | • 使用克制的深石板蓝、浅灰与淡绿学术配色（[review-style.sty](assets/review-style.sty)）<br>• Beamer / PPT 中的彩色强调统一转为干净的 `\textbf{}` |
-| **重点淡化** | 手算题、公式理解、概念辨析与论文巡礼平铺直叙，不知道该背还是该算 | • 依据课件与演讲者备注，在标题右侧标注低调的掌握深度标签<br>• 计算类与闭卷概念/论文类两套标签按课选用，绝不臆造权重 |
-| **主线不清** | 跨讲打乱重排主题，实例与父概念相隔数页，复习时对不上老师的授课脉络 | • 严格保留原讲次外层顺序（Lecture 1 → N），只在各讲内部重组层级<br>• 每个实例紧贴父概念放置，单份规范证明配可跳转交叉引用 |
-| **每一页作用不明** | 翻开一页分不清是在学定义、做对比、练推导还是读补充材料 | • 容器语义显式区分：方法框 `reviewmethod`、综合对比 `reviewsynthesis`、例题 `workedexample`、`Exam trap` 与讲末 `supplementbox`<br>• 可按需配可检索目录与经程序校验页码的 Quick-Lookup |
+| **Indiscriminate content stuffing** | Definitions, motivational filler, research outlooks, and trivial numeric plugs crowd the same page, hiding what is actually tested | • Separates core exam material from lecture-end `[Supplement]` / extension blocks<br>• Deletes redundant one-number checks and obsolete later-covered previews<br>• Keeps classroom exercises, difficult concepts, and consequential counterexamples |
+| **Cluttered layout** | Semicolon-packed sentences and deeply nested bullet walls hide boundaries between distinct claims | • Picks the smallest structure that fits the relation (property table, comparison matrix, numbered steps)<br>• Enforces line-by-line anti-crowding so every independent claim starts on its own line |
+| **Excessive colors** | Rainbow text highlights and loud callout boxes across every page cause rapid visual fatigue | • Uses a restrained slate-blue, soft-green, and neutral-gray palette ([review-style.sty](assets/review-style.sty))<br>• Normalizes colored Beamer / PPTX highlights into clean typographic `\textbf{}` |
+| **Diluted emphasis** | Hand calculations, formula interpretation, concept contrasts, and paper tours look identical, leaving you guessing what to memorize vs. compute | • Places understated, evidence-backed mastery-depth tags in headings<br>• Selects either the math/applied palette or the closed-book conceptual palette per course, never invented weights |
+| **Broken main thread** | Cross-lecture reshuffling and detached examples separate an instance from its parent concept by pages | • Preserves the outer lecture sequence (`Lecture 1` through `Lecture N`), reorganizing only within each lecture<br>• Keeps every instance adjacent to its parent concept and links repeated proofs to one canonical source |
+| **Unclear page purpose** | Flipping a page gives no immediate cue whether you are reading a definition, contrast, worked derivation, or optional aside | • Assigns explicit visual roles: `reviewmethod` (tools/statements), `reviewsynthesis` (summaries), `workedexample` (problems), `Exam trap`, and lecture-end `supplementbox`<br>• Supports clickable tables of contents and script-audited `(p. #)` lookup sheets |
 
-### 本 Skill 的风格与核心机制
+### Style and Core Mechanisms
 
-| 维度 | 核心规则 | 内置实现与具体例子 |
+| Dimension | Operative Rule | Built-in Implementation |
 |---|---|---|
-| **原文措辞优先** | 定义、性质、优缺点、代价、假设与对比标签尽量沿用课件原话，压缩靠筛选、去重与版面完成 | • 仅对新增衔接句与步骤动词做润色，不改写老师原话<br>• 发现课件笔误或口径变动时透明标出，不静默修改 |
-| **逐行防拥挤** | 禁止在同一行或同一单元格里用分号硬塞多条属性、指标或并行 `Input / Output` | • [review-style.sty](assets/review-style.sty) 内置悬挂缩进表格宏（`\tfirst`/`\ti`、`\tnumfirst`/`\tnum`、`\tsubfirst`/`\tsub`）<br>• 并行输入输出在全宽块中用 `\begin{cases}...\end{cases}` 叠排 |
-| **四段式公式计算链** | 必会公式例题必须把已知条件、符号公式、代入过程与结论拆清，不能只给记号与最终数字 | • 独立 `Given` 段落 → 编号动作步 → `记号 = 符号公式 = 代入数值 = 结果`（约等用 `\approx`）→ `Result`<br>• 所有数值例题交付前必须经 Python 脚本验算 |
-| **按复杂度分级写证明** | 实质性推导讲清机制，基础恒等式不强行套用笨重模板 | • 实质证明：`Assumptions` + 一句话 `Core idea` + 命名步骤 + 对齐推导 + 可选 `Exam trap`<br>• 基础恒等式：1–3 行直出，不强加 `Core idea` / `Steps` 标题 |
-| **两套掌握深度标签** | 按课程真实考试形态二选一，不把一套标签硬套到所有课上 | • **计算 / 应用课（Palette A）**：`[Hand-calc]`、`[Formula: interpret]`、`[Conceptual]`、`[Research preview]`、`[Not in exam scope]`<br>• **闭卷概念 / 论文课（Palette B）**：`[Core Concept]`、`[Contrast / Taxonomy]`、`[Method Map: I/O]`、`[Supplement]` |
-| **多模态提取与原图裁切** | 兼顾 PPTX 备注、隐藏页、图片公式与 Beamer 逐页揭示答案 | • PPTX 同步提取演讲者备注与 `show="0"` 隐藏页，缺文本公式的图片页出拼图人工核对<br>• 纯 `PyMuPDF` 300 DPI 自动滤除重复 Logo 裁图，并用紧框 `\slidefig` 嵌入 |
-| **单源多版与 8 道安全门** | 一套讲次源码同时编出单讲版与全课合订本，避免版面和检索硬伤 | • 单源 `lectures/lecture_N.tex` + 薄包装文件<br>• 内置 8 道编译与审计门禁（`minipage` 非断页盒、目录 `\texorpdfstring`、双栏目录防撞、跨章引用安全、`(p. #)` 页码与 Ctrl+F 校验） |
+| **Source wording first** | Reuse slide phrasing and qualifiers for definitions, properties, costs, limitations, and comparison axes; compress by selection, deduplication, and layout | • Restricts prose polishing to added transitions and action verbs<br>• Discloses verified slide typos or convention flips openly in `Scope / trap` and `SOURCE_MAP.md` instead of silently altering source terms |
+| **Line-by-line anti-crowding** | Never pack multiple metrics, applications, or parallel `Input / Output` pairs onto one semicolon-separated line | • Uses hanging-indent table cell macros (`\tfirst`/`\ti`, `\tnumfirst`/`\tnum`, `\tsubfirst`/`\tsub`) in [review-style.sty](assets/review-style.sty)<br>• Stacks compact parallel pairs in full-width `\begin{cases}...\end{cases}` blocks |
+| **Four-stage calculation chains** | Worked formula examples must expose inputs, symbolic formula, substitution, and result instead of jumping straight to a number | • Separates `Given` above numbered solution steps<br>• Shows `notation = symbolic formula = substituted values = result` (`\approx` when rounded)<br>• Verifies every numerical example and constructed check with Python before delivery |
+| **Complexity-aware proofs** | Explain the trick behind hard derivations without burying elementary identities under boilerplate | • Substantive multi-step proofs: `Assumptions`, one-sentence `Core idea`, named steps, aligned displays, and optional `Exam trap`<br>• Elementary identities: 1–3 readable lines without forced headings |
+| **Course-matched depth tags** | Match assessment labels to the actual exam format rather than forcing one template onto every course | • **Math / applied courses (Palette A):** `[Hand-calc]`, `[Formula: interpret]`, `[Conceptual]`, `[Research preview]`, `[Not in exam scope]`<br>• **Closed-book conceptual / paper-showcase courses (Palette B):** `[Core Concept]`, `[Contrast / Taxonomy]`, `[Method Map: I/O]`, `[Supplement]` |
+| **Multimodal extraction & figure cropping** | Capture clues that plain PDF text dumps drop, and retain clean visual memory aids | • PPTX + PDF: extracts speaker notes, hidden slides (`show="0"`), and flags `imgs > 0` pages lacking math XML for visual contact-sheet review<br>• Beamer PDF: runs span-level `PyMuPDF` inspection for color/bold keywords and shared-footer quiz/answer overlays<br>• Pure-`PyMuPDF` (`fitz`, no `PIL` dependency) `300 DPI` figure cropping with recurring-logo filtering and tight-border `\slidefig` |
+| **Single-source builds & 8 safety gates** | Build standalone lecture PDFs and a full bound book from one canonical source without broken formatting | • Canonical `lectures/lecture_N.tex` files included by thin standalone and bound wrappers<br>• Enforces 8 LaTeX gates: non-breakable `inlineexample`/`inlineconcept` in `minipage`s, `[Clean Title]` + `\texorpdfstring`, two-column bound TOC spacing, cross-chapter `\ref` safety, `[t]` `minipage` top alignment, `\newline` in last-column table macros, pre-compile lint, and Ctrl+F / `(p. #)` audits |
 
-### 仓库内容
+### Repository Contents
 
-| 路径 | 作用 |
+| Path | Purpose |
 |---|---|
-| [SKILL.md](SKILL.md) | 主技能规范（v1.6.0）：范围建立、讲次顺序、原文保留、例题链、版面与交付门禁 |
-| [CHANGELOG.md](CHANGELOG.md) | 从 v1.1.0 到 v1.6.0 的完整版本迭代记录 |
-| [assets/review-style.sty](assets/review-style.sty) | 单栏 A4 LaTeX 样式预设（10.8pt 衬线正文、克制石板蓝/绿/灰配色、全部盒子与排版宏） |
-| [assets/starter.tex](assets/starter.tex) | 可直接编译的讲义示例（概念对比表、四段式计算链、图文并排、讲次综合表） |
-| [assets/proof-layout.tex](assets/proof-layout.tex) | 可直接编译的证明排版示例（基础恒等式 vs. `Core idea` + 命名步骤 + `Exam trap`） |
-| [references/structure-and-phrasing.md](references/structure-and-phrasing.md) | 原文保留、反分号堆砌、实例就近放置与四段式公式链细则 |
-| [references/figures-and-layout.md](references/figures-and-layout.md) | 表格/框图选型、纯 `PyMuPDF` 300 DPI 裁图流程、模块化构建与 8 道 LaTeX 安全门 |
-| [references/retrieval-and-scope.md](references/retrieval-and-scope.md) | 开卷任务-工具速查与闭卷三段式速查、Beamer 提取、深度标签与符号/勘误登记表 |
-| [references/mathematical-review.md](references/mathematical-review.md) | 数学/理论课的定理条件、随机性界定、证明机制与数值来源区分 |
-| [references/compression-and-release.md](references/compression-and-release.md) | 压缩任务的基线测量、去重删减原则、分册边界与交付前版面审计 |
-| [references/preference-evidence.md](references/preference-evidence.md) | 规则演进依据与适用边界（维护技能时查阅） |
-| [agents/openai.yaml](agents/openai.yaml) | Codex / Agent 界面发现元数据与默认提示词 |
+| [SKILL.md](SKILL.md) | Main skill specification (v1.6.0): scope discovery, lecture order, source wording, worked chains, layout, and release gates |
+| [CHANGELOG.md](CHANGELOG.md) | Complete release notes from v1.1.0 through v1.6.0 |
+| [assets/review-style.sty](assets/review-style.sty) | Single-column A4 LaTeX preset (10.8pt serif body, slate/green/gray palette, boxes, depth tags, `\slidefig`, hanging-indent cell macros) |
+| [assets/starter.tex](assets/starter.tex) | Compilable lecture demo (concept matrix, full calculation chain, text-plus-TikZ `minipage`, lecture synthesis) |
+| [assets/proof-layout.tex](assets/proof-layout.tex) | Compilable proof demo contrasting a 1–3 line identity with a `Core idea` + named-steps proof and `Exam trap` |
+| [references/structure-and-phrasing.md](references/structure-and-phrasing.md) | Source-wording preservation, anti-crowding tables, instance locality, and four-stage calculation rules |
+| [references/figures-and-layout.md](references/figures-and-layout.md) | Structure selection, pure-`PyMuPDF` 300 DPI cropping, single-source builds, and the 8 LaTeX safety gates |
+| [references/retrieval-and-scope.md](references/retrieval-and-scope.md) | Open-book vs. closed-book 3-part quick-lookup designs, Beamer extraction, depth palettes, and notation/errata registry |
+| [references/mathematical-review.md](references/mathematical-review.md) | Theorem conditions, randomness/quantifier hygiene, proof prioritization, and computed vs. reported measurements |
+| [references/compression-and-release.md](references/compression-and-release.md) | Main-body baseline accounting, deduplication criteria, companion-volume boundaries, and page/whitespace gates |
+| [references/preference-evidence.md](references/preference-evidence.md) | Provenance and generalization boundaries for maintaining the skill |
+| [agents/openai.yaml](agents/openai.yaml) | Agent UI discovery metadata and default prompt |
 
 ---
 
-## 2. 配置到 Agent
+## 2. Configure on an Agent
 
-### 方式 A：通过 Skills CLI 一键安装（推荐）
+### Option A: Install via Skills CLI (Recommended)
 
-支持 Codex、Claude Code、Antigravity、Cursor、OpenCode 等兼容 [Agent Skills](https://skills.sh/) 规范的工具：
+Works across Codex, Claude Code, Antigravity, Cursor, OpenCode, and other tools compatible with [Agent Skills](https://skills.sh/):
 
 ```bash
 npx skills add EnjiXiong/rewrite-course-notes
 ```
 
-全局安装并跳过交互确认：
+Install globally without interactive prompts:
 
 ```bash
 npx skills add EnjiXiong/rewrite-course-notes -g -y
 ```
 
-### 方式 B：直接 `git clone` 到对应 Agent 的技能目录
+### Option B: Clone Directly into Your Agent's Skills Directory
 
-本仓库根目录即为完整技能包（包含 `SKILL.md`、`assets/`、`references/`），克隆到对应目录即可生效，后续在目录内运行 `git pull` 即可同步更新：
+The repository root is a self-contained skill folder (`SKILL.md`, `assets/`, `references/`). Clone it into the target directory and run `git pull` later to update:
 
-| Agent / 作用域 | 安装命令 | 对话内调用方式 |
+| Agent / Scope | Install command | Invoke in chat |
 |---|---|---|
-| **Codex**（全局） | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.codex/skills/rewrite-course-notes` | `$rewrite-course-notes` |
-| **Antigravity**（全局） | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.gemini/config/skills/rewrite-course-notes` | `/rewrite-course-notes` |
-| **Claude Code**（全局） | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.claude/skills/rewrite-course-notes` | `/rewrite-course-notes` |
-| **通用 / 项目级**（Cursor、OpenCode、Antigravity 等） | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git .agents/skills/rewrite-course-notes` | 在该仓库对话中直接引用技能名 |
+| **Codex** (global) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.codex/skills/rewrite-course-notes` | `$rewrite-course-notes` |
+| **Antigravity** (global) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.gemini/config/skills/rewrite-course-notes` | `/rewrite-course-notes` |
+| **Claude Code** (global) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git ~/.claude/skills/rewrite-course-notes` | `/rewrite-course-notes` |
+| **Project-local** (Cursor, OpenCode, Antigravity, etc.) | `git clone https://github.com/EnjiXiong/rewrite-course-notes.git .agents/skills/rewrite-course-notes` | Reference the skill name in chat |
 
-### 可选本地环境依赖（输出 PDF 与解析课件时）
+### Optional Local Dependencies (For PDF Compilation & Slide Extraction)
 
-仅生成 Markdown 复习提纲时无需额外依赖。如果需要直接编译 PDF 并自动提取 PPTX 备注、隐藏页与高清原图，建议安装：
+Markdown-only review sheets need no extra packages. To compile the LaTeX templates into PDF and extract PPTX speaker notes, hidden slides, and slide figures:
 
-1. **LaTeX 编译器**：TeX Live（英文讲义使用 `pdflatex`，中文讲义使用 `xelatex` + `ctex`）。可用内置模板验证环境：
+1. **LaTeX distribution**: TeX Live (`pdflatex` for English notes; `xelatex` + `ctex` for Chinese notes). Verify the bundled preset works:
    ```bash
    cp assets/review-style.sty assets/starter.tex /tmp/ && cd /tmp && pdflatex starter.tex && pdflatex starter.tex
    ```
-2. **Python 提取库**（按课件格式按需安装）：
+2. **Python extraction libraries** (install as needed for your source decks):
    ```bash
    pip install pymupdf python-pptx
    ```
 
 ---
 
-## 3. 推荐 Prompt（英文可复制模板）
+## 3. Recommended Prompt
 
-复制下面整段 Markdown 并替换 `[...]` 中的课程信息即可直接使用（若在 Codex 中调用，将开头的 `/rewrite-course-notes` 改为 `$rewrite-course-notes`）：
+Copy the Markdown block below, replace the `[...]` placeholders with your course details, and paste it to your agent (switch `/rewrite-course-notes` to `$rewrite-course-notes` if using Codex):
 
 ```markdown
 Use /rewrite-course-notes to build exam review notes for **[Course Code & Title]**.
@@ -143,12 +143,12 @@ Use /rewrite-course-notes to build exam review notes for **[Course Code & Title]
   4. Maintain a notation, convention-flip, and slide-errata registry (`SOURCE_MAP.md`), and verify zero LaTeX warnings, clean page breaks, searchable text, and audited `(p. #)` pointers.
 ```
 
-### Prompt 关键字段填写速查
+### Quick Guide to Key Prompt Fields
 
-| 字段 | 填写建议 | 对输出结果的直接影响 |
+| Field | What to specify | Effect on the output |
 |---|---|---|
-| **In-scope / Excluded** | 写清必考讲次与明确排除项，不确定时填 `None` | 避免误删附录中的必考内容，也避免给非考点分配过多篇幅 |
-| **Exam format** | 写明 `Closed-book` 或 `Open-book` | 决定速查手册结构（闭卷用对比矩阵 + 分类表 + 缩写表，开卷用任务-工具-页码索引） |
-| **Mastery-depth tag palette** | 数理/计算课选 **Palette A**，偏概念/论文课选 **Palette B** | 统一全书的掌握深度标注，不混用两套标签 |
-| **Optional companion volumes** | 开工前逐项标明 `Yes` / `No` | 按需生成配套分册，避免多出用不到的冗余文件 |
-| **Topics I still find unfamiliar** | 列出 2–4 个最容易卡壳的章节或方法 | 仅在这些位置强化连贯例题与直觉检查，不把整本讲义写臃肿 |
+| **In-scope / Excluded** | List covered lectures and explicitly excluded parts; write `None` if unsure | Prevents accidental removal of tested appendices and keeps excluded topics out of core space |
+| **Exam format** | State `Closed-book` or `Open-book` | Selects the companion architecture (contrast matrix + taxonomy + glossary vs. task-to-tool index) |
+| **Mastery-depth tag palette** | Pick **Palette A** for math/applied exams or **Palette B** for closed-book conceptual/paper courses | Applies one consistent set of depth badges across the whole pack |
+| **Optional companion volumes** | Answer `Yes` or `No` upfront for `quick-lookup`, `self-test`, and `extensions` | Generates only the volumes you will actually study before the exam |
+| **Topics I still find unfamiliar** | Name 2–4 topics where you keep getting stuck | Strengthens worked examples and intuition checks locally without bloating other lectures |
