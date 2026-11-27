@@ -1,6 +1,6 @@
 # rewrite-course-notes
 
-> **Version 1.6.0** · Agent Skill for students reviewing previously studied courses before exams  
+> Agent Skill for students reviewing previously studied courses before exams  
 > **Recommended pairing: Gemini** (Antigravity / Gemini CLI) for full-course multimodal slide extraction, contact-sheet formula inspection, and rendered PDF verification.  
 > Restructure and compress course slides (PPTX / Beamer PDF) in original lecture order while preserving lecturer wording, complete formula chains, and slide synthesis, producing clean, searchable LaTeX / PDF review notes without visual clutter.
 
@@ -10,7 +10,7 @@
 
 ### What It Is
 
-`rewrite-course-notes` is an **Agent Skill** ([SKILL.md](SKILL.md), version history in [CHANGELOG.md](CHANGELOG.md)) built for learners who have already attended class and need compact, exam-ready review sheets rather than another introductory textbook. Given course slides and exam scope, the agent extracts text, speaker notes, and figures in lecture order, verifies worked calculations and errata with scripts, and outputs structured LaTeX / PDF review notes and optional lookup companions.
+`rewrite-course-notes` is an **Agent Skill** ([SKILL.md](SKILL.md)) built for learners who have already attended class and need compact, exam-ready review sheets rather than another introductory textbook. Given course slides and exam scope, the agent extracts text, speaker notes, and figures in lecture order, verifies worked calculations and errata with scripts, and outputs structured LaTeX / PDF review notes and optional lookup companions.
 
 ### Why Use It: Eliminating "AI Slop" Course Notes
 
@@ -41,8 +41,7 @@ Too many lecture decks and AI-generated study summaries suffer from **AI slop**:
 
 | Path | Purpose |
 |---|---|
-| [SKILL.md](SKILL.md) | Main skill specification (v1.6.0): scope discovery, lecture order, source wording, worked chains, layout, and release gates |
-| [CHANGELOG.md](CHANGELOG.md) | Complete release notes from v1.1.0 through v1.6.0 |
+| [SKILL.md](SKILL.md) | Main skill specification: scope discovery, lecture order, source wording, worked chains, layout, and release gates |
 | [assets/review-style.sty](assets/review-style.sty) | Single-column A4 LaTeX preset (10.8pt serif body, slate/green/gray palette, boxes, depth tags, `\slidefig`, hanging-indent cell macros) |
 | [assets/starter.tex](assets/starter.tex) | Compilable lecture demo (concept matrix, full calculation chain, text-plus-TikZ `minipage`, lecture synthesis) |
 | [assets/proof-layout.tex](assets/proof-layout.tex) | Compilable proof demo contrasting a 1–3 line identity with a `Core idea` + named-steps proof and `Exam trap` |
