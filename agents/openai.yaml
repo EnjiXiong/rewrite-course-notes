@@ -1,0 +1,6 @@
+interface:
+  display_name: Course Review Notes
+  short_description: Lecture-ordered notes with slide wording and complete solutions
+  default_prompt: Use $rewrite-course-notes to compress these materials in lecture
+    order, preserving slide wording and synthesis, keeping instances local, and showing
+    formula-to-substitution-to-result chains.

@@ -1,0 +1,21 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.pdf
+
+# Python and OS noise
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+Thumbs.db

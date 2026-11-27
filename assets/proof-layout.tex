@@ -1,0 +1,49 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{review-style}
+% Standalone illustrative sample: not course content or an assessment requirement.
+% Substantive proofs get Core idea + conditions + reconstructible named actions.
+% Elementary support stays in 1--3 lines without compulsory scaffolding.
+% No compulsory numerical example, lookup sheet, or full-course frontmatter.
+\renewcommand{\reviewtitle}{Proof layout sample}
+\begin{document}
+% Elementary support: no Core idea, numbered Steps, or appended numeric check.
+\reviewsection{Indicator expectation: elementary support}{indicator-support}
+For an event $A$ on a probability space,
+$\mathbb E[\mathbf 1_A]=1\cdot\mathbb P(A)+0\cdot\mathbb P(A^c)=\mathbb P(A)$.
+% Assessment labels must come from the source; complexity controls layout.
+
+\reviewsection{Minimum-norm solution: orthogonal decomposition}{minimum-norm}
+\provenance{Constructed layout demonstration. Assessment status must come from the actual course.}
+\begin{reviewmethod}{Minimum-norm solution}
+\assumptions{$J\in\mathbb R^{m\times p}$, $q\in\mathbb R^m$, and $K=JJ^\top\succ0$.}
+The unique minimum-norm solution of $Ju=q$ is $u_*=J^\top K^{-1}q$.
+\end{reviewmethod}
+\coreidea{Split each feasible solution into the candidate in the row space and an orthogonal null-space residual. Only the residual adds squared norm.}
+\begin{enumerate}
+\item \textbf{Establish feasibility.} Substitute the candidate using invertibility:
+\[
+Ju_*=JJ^\top K^{-1}q=KK^{-1}q=q.
+\]
+\item \textbf{Identify the residual.} For any feasible $u$, let $z=u-u_*$. Both solutions satisfy the constraint, so
+\[
+\begin{aligned}
+Jz&=Ju-Ju_*=q-q=0,\\
+u_*^\top z&=q^\top K^{-1}Jz=0.
+\end{aligned}
+\]
+\item \textbf{Compare norms.} Orthogonality gives
+\[
+\|u\|^2=\|u_*\|^2+\|z\|^2\ge\|u_*\|^2.
+\]
+Equality holds exactly when $z=0$, proving uniqueness.
+\end{enumerate}
+\examtrap{If $K$ is singular, the displayed inverse formula is unavailable. A pseudoinverse treatment needs its own feasibility conditions. The original positive-definiteness assumption stays with the statement.}
+% No arbitrary Example is appended to fill a per-result quota.
+% Later uses point to the canonical argument instead of reprinting its proof.
+The row-space decomposition in \hyperref[minimum-norm]{Minimum-norm solution}
+(p.~\pageref{minimum-norm}) also explains why a nonzero feasible null-space
+residual strictly increases the norm.
+% Source-optional extensions may go at lecture end or in an authorized volume.
+% Remove duplicate later-covered previews; do not move assessed APPLY out.
+% This template is not evidence of contraction: measure the actual task output.
+\end{document}

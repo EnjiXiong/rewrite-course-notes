@@ -1,0 +1,132 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{review-style}
+% Invented teaching material demonstrating structure, not actual course content.
+% Replace these phrases with the current slides' original wording.
+% Keep lecture order, source synthesis, and each instance with its parent.
+% For proof-oriented courses, also read references/mathematical-review.md.
+% Use the course's proof badges; a full displayed proof does not imply that
+% independent reconstruction is required. Define symbols and randomness first.
+% For substantive proofs, state the Core idea, then named actions and displays.
+% Elementary identities need only 1--3 readable lines, regardless of badge.
+% Retain essential hard/required reasoning even when its source badge is SUPPORT.
+% Select examples by classroom/learning-check/difficult-concept/counterexample value.
+% No one-result-one-example rule: preserve essential cases, delete redundant checks.
+% Merge repeated setup, not selected examples into incomplete formula fragments.
+% Keep assumptions with statements; use a compact wrapping exam trap only if useful.
+% See proof-layout.tex for the optional proof structure.
+% Add lookup sheets only for the requested retrieval scope; see retrieval-and-scope.md.
+% Keep a notation registry rather than globally replacing overloaded symbols.
+% Put source-optional extensions at lecture end or in an authorized separate volume.
+% Use canonical proof labels and actual references; delete later-covered previews.
+% Separate lookup/self-test volumes may be authorized; avoid duplication in the body.
+% Keep standalone body definitions and move experiment minutiae to the source map.
+% For compression, baseline main-body pages/words and set a task-specific budget.
+% Report main vs total vs relocated; no fixed course quota and no tiny-font workaround.
+% Inspect actual page counts, blank space, and orphan Needspace failures.
+% Assessed APPLY material stays in the main study path even when its proof is optional.
+% Identify computed, constructed, and source-measured values separately.
+\renewcommand{\reviewtitle}{Course review}
+% A neutral header stays accurate when two short lectures share a page.
+\renewcommand{\reviewtopic}{Illustrative notes}
+\begin{document}
+
+\reviewsection{Lecture 1: Center and spread}{lecture-one}
+\begin{reviewsynthesis}{Concept comparison}
+{\arrayrulecolor{ReviewBlue!40}
+\begin{tabularx}{\linewidth}{@{}P{29mm}|Y|Y@{}}
+\textbf{Dimension} & \textbf{Population variance} & \textbf{Sample variance} \\\hline
+Symbol & $\sigma^2$ & $s^2$ \\\hline
+Reference center & Population mean $\mu$ & Sample mean $\bar x$ \\\hline
+Denominator & $N$ & $n-1$ \\
+\end{tabularx}}
+\end{reviewsynthesis}
+
+\begin{workedexample}{Calculate both variances}
+\given{Values $1,2,3$. Compare population and sample variance, with $N=n=3$.}
+\begin{enumerate}
+\item \textbf{Mean:}
+\[
+\bar x=\frac1n\sum_{i=1}^n x_i=\frac{1+2+3}{3}=2.
+\]
+\item \textbf{Population variance:} for the population interpretation, $\mu=\bar x$.
+\[
+\sigma^2=\frac1N\sum_{i=1}^N(x_i-\mu)^2
+=\frac{(1-2)^2+(2-2)^2+(3-2)^2}{3}
+=\frac23\approx0.6667.
+\]
+\item \textbf{Sample variance:}
+\[
+s^2=\frac1{n-1}\sum_{i=1}^n(x_i-\bar x)^2
+=\frac{(1-2)^2+(2-2)^2+(3-2)^2}{3-1}=1.
+\]
+\end{enumerate}
+\result{The denominator changes from $N$ to $n-1$. Choose it from the question's population/sample interpretation.}
+\end{workedexample}
+
+\begin{reviewsynthesis}{Lecture 1 synthesis}
+{\arrayrulecolor{ReviewBlue!40}
+\begin{tabularx}{\linewidth}{@{}P{29mm}|Y|Y@{}}
+\textbf{Operation} & \textbf{Quantity} & \textbf{Relationship} \\\hline
+Center & Mean & Reference for deviations \\\hline
+Subtract the center & $x_i-\mu$ or $x_i-\bar x$ & Signed deviation in the original units \\\hline
+Aggregate squares & Variance & Denominator depends on population or sample \\\hline
+Take the square root & Standard deviation & Returns to the original units \\
+\end{tabularx}}
+\end{reviewsynthesis}
+
+% Do not force a new page for every short lecture; inspect the rendered break.
+\reviewsection{Lecture 2: Neighbor voting}{lecture-two}
+\begin{reviewsynthesis}{Concept and adjacent instance}
+{\arrayrulecolor{ReviewBlue!40}
+\begin{tabularx}{\linewidth}{@{}P{29mm}|Y@{}}
+\textbf{Parent concept} & Distance-weighted voting \\\hline
+Property & Closer neighbors receive more weight. \\\hline
+Instance & Inverse-square weighting: $w_i=1/d_i^2$ \\\hline
+Condition & Distances must be nonzero for this expression. \\
+\end{tabularx}}
+\end{reviewsynthesis}
+
+\begin{workedexample}{Compare the voting rules}
+% Keep the complete Given and first action together; the style reserves six lines.
+% Inspect the rendered opening if longer givens or a taller first action are used.
+\given{Three neighbors at distances $1,2,3$, with labels $A,B,B$. Compare equal votes and inverse-square weights.}
+\noindent\begin{minipage}[c]{.57\linewidth}\raggedright
+\textbf{1. Equal votes:} $B$ has two votes and $A$ has one. Use the same neighbors for the weighted comparison.
+\end{minipage}\hfill
+\begin{minipage}[c]{.40\linewidth}\centering
+\begin{tikzpicture}[x=.95cm,y=.9cm,font=\sffamily\fontsize{8.5}{10}\selectfont]
+\draw[ReviewMuted!45] (-2.4,0)--(3.4,0);
+\fill[ReviewBlue] (-2,0) circle (2pt) (3,0) circle (2pt);
+\fill[ReviewInk] (0,.10)--(.10,0)--(0,-.10)--(-.10,0)--cycle;
+\fill[orange!75!black] (1,.12)--(.88,-.08)--(1.12,-.08)--cycle;
+\node[above=4pt,text=ReviewBlue] at (-2,0) {$B$};
+\node[above=4pt,text=orange!75!black] at (1,0) {$A$};
+\node[above=4pt,text=ReviewBlue] at (3,0) {$B$};
+\node[below=4pt] at (-2,0) {$d=2$};
+\node[above=4pt] at (0,0) {query};
+\node[below=4pt] at (1,0) {$d=1$};
+\node[below=4pt] at (3,0) {$d=3$};
+\node[text=ReviewMuted] at (.5,-1.05) {One possible 1-D layout};
+\end{tikzpicture}
+\end{minipage}\par
+\textbf{2. Inverse-square weights:}
+\[
+\begin{aligned}
+W_A&=\sum_{i:y_i=A}\frac1{d_i^2}
+=\frac1{1^2}=1,\\[3pt]
+W_B&=\sum_{i:y_i=B}\frac1{d_i^2}
+=\frac1{2^2}+\frac1{3^2}=\frac{13}{36}.
+\end{aligned}
+\]
+\result{Equal voting predicts $B$, whereas inverse-square voting predicts $A$.}
+\end{workedexample}
+
+\begin{reviewsynthesis}{Lecture 2 synthesis}
+{\arrayrulecolor{ReviewBlue!40}
+\begin{tabularx}{\linewidth}{@{}P{29mm}|Y|P{22mm}@{}}
+\textbf{Rule} & \textbf{Role of distance} & \textbf{This example} \\\hline
+Equal votes & Distances select the neighbors. & Class $B$ \\\hline
+Inverse-square weights & Distances also determine voting weight. & Class $A$ \\
+\end{tabularx}}
+\end{reviewsynthesis}
+\end{document}

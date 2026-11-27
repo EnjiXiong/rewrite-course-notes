@@ -1,0 +1,102 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{review-style}[2026/11/27 Course review notes preset 1.6.0]
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{newtxtext}
+\RequirePackage{amsmath,amssymb,mathtools,newtxmath}
+\RequirePackage[scaled=.93]{helvet}
+\RequirePackage[a4paper,left=19mm,right=19mm,top=19mm,bottom=18mm,headheight=14pt,headsep=5mm,footskip=9mm]{geometry}
+\RequirePackage{microtype}
+\RequirePackage[table]{xcolor}
+\RequirePackage{booktabs,tabularx,array,graphicx}
+\RequirePackage{enumitem,titlesec,fancyhdr,needspace}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{tikz}
+\RequirePackage{hyperref,bookmark,lastpage}
+\definecolor{ReviewInk}{HTML}{243746}
+\definecolor{ReviewBlue}{HTML}{527EA5}
+\definecolor{ReviewGreen}{HTML}{568F72}
+\definecolor{ReviewMuted}{HTML}{63717A}
+\hypersetup{colorlinks=true,linkcolor=ReviewBlue,urlcolor=ReviewBlue,pdftitle={Course review notes}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt plus .5pt}
+\setlength{\emergencystretch}{2em}
+\AtBeginDocument{\fontsize{10.8}{13.1}\selectfont\setlength{\abovedisplayskip}{4pt}\setlength{\belowdisplayskip}{4pt}\setlength{\abovedisplayshortskip}{3pt}\setlength{\belowdisplayshortskip}{3pt}}
+\setlist{leftmargin=1.45em,topsep=2pt,itemsep=1.5pt,parsep=0pt}
+\setlist[enumerate]{label=\arabic*.,font=\sffamily\bfseries\color{ReviewInk}}
+\setlist[itemize]{label=\textcolor{ReviewBlue}{\textbullet},leftmargin=1.15em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\renewcommand{\arraystretch}{1.13}
+\setlength{\tabcolsep}{5pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\BeforeBeginEnvironment{tabularx}{\par\smallskip\noindent}
+\AfterEndEnvironment{tabularx}{\par}
+\titleformat{\section}{\fontsize{17}{20}\selectfont\sffamily\bfseries\color{ReviewInk}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{9pt}{7pt}
+\titleformat{\subsection}{\fontsize{11.3}{13.5}\selectfont\sffamily\bfseries\color{ReviewInk}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{7pt}{3pt}
+\newcommand{\reviewtitle}{Course review}
+\newcommand{\reviewtopic}{}
+\newcommand{\reviewsource}{}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\footnotesize\sffamily\color{ReviewMuted}\reviewtitle}
+\fancyhead[R]{\footnotesize\sffamily\color{ReviewMuted}\reviewtopic}
+\fancyfoot[L]{\fontsize{8}{9}\selectfont\sffamily\color{ReviewMuted}\reviewsource}
+\fancyfoot[R]{\small\sffamily\thepage\,/\,\pageref*{LastPage}}
+\renewcommand{\headrulewidth}{.3pt}
+% Reserve only a heading and a few following lines; inspect actual page gaps.
+% Do not add large per-proof Needspace reservations to force whole blocks together.
+\newcommand{\reviewsection}[2]{\Needspace{4\baselineskip}\phantomsection\pdfbookmark[0]{#1}{#2}\section*{#1}\label{#2}}
+\newcounter{workedexample}
+\tcbset{reviewbase/.style={enhanced,breakable,sharp corners,boxrule=.4pt,left=7pt,right=7pt,top=4pt,bottom=4pt,before skip=5pt,after skip=4pt,fonttitle=\sffamily\bfseries\fontsize{10.2}{12}\selectfont,coltitle=ReviewInk,toptitle=3pt,bottomtitle=3pt}}
+% Reserve a useful opening fragment: Given plus the first action, not just the title.
+% Longer examples remain breakable; inspect real givens/actions at reading size.
+\newenvironment{workedexample}[1]{\refstepcounter{workedexample}\begin{tcolorbox}[reviewbase,lines before break=6,colback=ReviewGreen!3!white,colframe=ReviewGreen!45!white,colbacktitle=ReviewGreen!11!white,title={Example \theworkedexample\quad #1}]}{\end{tcolorbox}}
+% Non-breakable variants for side-by-side minipage layouts (prevent tcolorbox clipping).
+\newenvironment{inlineexample}[1]{\refstepcounter{workedexample}\begin{tcolorbox}[reviewbase,breakable=false,colback=ReviewGreen!3!white,colframe=ReviewGreen!45!white,colbacktitle=ReviewGreen!11!white,title={Example \theworkedexample\quad #1}]}{\end{tcolorbox}}
+\newtcolorbox{inlineconcept}[1]{reviewbase,breakable=false,colback=ReviewBlue!3!white,colframe=ReviewBlue!45!white,colbacktitle=ReviewBlue!11!white,title={#1}}
+\newtcolorbox{reviewmethod}[1]{reviewbase,colback=ReviewBlue!3!white,colframe=ReviewBlue!45!white,colbacktitle=ReviewBlue!11!white,title={#1}}
+\newtcolorbox{reviewsynthesis}[1]{reviewbase,colback=white,colframe=ReviewBlue!55!white,colbacktitle=ReviewBlue!11!white,title={#1}}
+% Neutral-gray block for one short script-verified intuition check on unworked formulas.
+\newtcolorbox{intuitionbox}[1]{reviewbase,breakable=false,colback=black!2!white,colframe=black!25!white,colbacktitle=black!6!white,title={Intuition check (constructed, not required for hand-calc): #1}}
+% Neutral-tinted lecture-end technical supplement box (placed after summary tables).
+\newtcolorbox{supplementbox}[1]{reviewbase,breakable,lines before break=5,colback=black!2!white,colframe=black!25!white,colbacktitle=black!6!white,fontupper=\small,title={#1}}
+% Understated right-aligned mastery-depth tags (use with \texorpdfstring and [Clean Title] in headings).
+% Palette A: math/applied decks.
+\newcommand{\depth}[1]{\hfill{\footnotesize\sffamily\normalfont\color{ReviewMuted}[#1]}}
+\newcommand{\depthcalc}{\depth{Hand-calc}}
+\newcommand{\depthinterp}{\depth{Formula: interpret}}
+\newcommand{\depthconcept}{\depth{Conceptual}}
+\newcommand{\depthpreview}{\depth{Research preview}}
+\newcommand{\depthnoexam}{\depth{Not in exam scope}}
+% Palette B (optional): closed-book conceptual & paper-showcase decks.
+\newcommand{\depthcore}{\depth{Core Concept}}
+\newcommand{\depthcontrast}{\depth{Contrast / Taxonomy}}
+\newcommand{\depthmethod}{\depth{Method Map: I/O}}
+\newcommand{\depthsupp}{\depth{Supplement}}
+\newcommand{\given}[1]{\par\noindent\textbf{Given:} #1\par\nobreak\vspace{1.5pt}}
+\newcommand{\calculation}[1]{\par\noindent\textit{Calculation:} #1\par}
+\newcommand{\result}[1]{\par\textit{Result:} #1}
+% Use only for a consequential check; delete redundant arithmetic, do not relabel it.
+\newcommand{\reviewcheck}[1]{\par{\small\textit{Check:} #1}}
+% Optional retrieval/proof helpers. Content and scope determine their use.
+% No Core idea/Steps scaffold for elementary identities; keep readable body type.
+% A separate lookup/extension/self-test volume is allowed when task-authorized.
+% Traps wrap naturally: never truncate an assumption to fit a one-line box.
+\newcommand{\coreidea}[1]{\par\noindent\textbf{Core idea:} #1\par}
+\newcommand{\assumptions}[1]{\par\noindent\textbf{Assumptions:} #1\par}
+\newcommand{\examtrap}[1]{\par\smallskip\noindent{\small\textbf{Exam trap:} #1}\par}
+\newcommand{\provenance}[1]{\par\noindent{\footnotesize\color{ReviewMuted}#1}\par}
+% Tight-border slide figure helper (deducts 2*(1.5pt + 0.4pt) = 3.8pt frame padding) and caption.
+\newcommand{\figcap}[1]{{\footnotesize\color{ReviewMuted}\textit{#1}}}
+\newcommand{\slidefig}[2][\linewidth]{{\setlength{\fboxsep}{1.5pt}\setlength{\fboxrule}{0.4pt}\fcolorbox{ReviewMuted!35}{white}{\includegraphics[width=\dimexpr#1-3.8pt\relax]{#2}}}}
+% Line-by-line hanging-indent helpers for tabularx/longtable cells (avoid semicolon walls and never use \\).
+\newcommand{\tfirst}[1]{\hangindent=0.9em\hangafter=1\noindent{\color{ReviewBlue}\textbullet}\hspace{0.4em}#1}
+\newcommand{\ti}[1]{\par\vspace{1.2pt}\hangindent=0.9em\hangafter=1\noindent{\color{ReviewBlue}\textbullet}\hspace{0.4em}#1}
+\newcommand{\tnumfirst}[2]{\hangindent=1.15em\hangafter=1\noindent{\sffamily\bfseries\color{ReviewInk}#1.}\hspace{0.35em}#2}
+\newcommand{\tnum}[2]{\par\vspace{1.2pt}\hangindent=1.15em\hangafter=1\noindent{\sffamily\bfseries\color{ReviewInk}#1.}\hspace{0.35em}#2}
+\newcommand{\tsubfirst}[1]{\noindent{\sffamily\bfseries\color{ReviewInk}#1}}
+\newcommand{\tsub}[1]{\par\vspace{2.2pt}\noindent{\sffamily\bfseries\color{ReviewInk}#1}}
+\newtcolorbox{reviewlookup}[1]{reviewbase,breakable,colback=white,colframe=ReviewBlue!55!white,colbacktitle=ReviewBlue!11!white,title={#1}}
+\newtcolorbox{reviewextension}[1]{reviewbase,breakable,colback=black!2!white,colframe=black!25!white,colbacktitle=black!7!white,title={#1}}
+\raggedbottom
